@@ -15,11 +15,16 @@ if (command === 'read') {
     if (err) {
       throw err;
     }
-    else if (number < 0 || number > data) {
+    else if (number < 0 || number > data.length) {
       console.log(`USAGE node pets.js read INDEX`);
       process.exit(1);
     }
-    console.log(data[number]);
+    else if (number === undefined) {
+      console.log(data);
+    }
+    else {
+      console.log(data[number]);
+    }
   });
 }
 else {
