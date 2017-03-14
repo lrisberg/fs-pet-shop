@@ -5,26 +5,54 @@ const path = require('path');
 
 const node = path.basename(process.argv[0]);
 const file = path.basename(process.argv[1]);
-const command = process.argv[2];
-const number = process.argv[3];
+const cmd = process.argv[2];
+const num = process.argv[3];
 
-if (command === 'read') {
+if (cmd === 'read') {
   fs.readFile('pets.json', 'utf8', (err, data) => {
     data = JSON.parse(data);
 
     if (err) {
       throw err;
     }
-    else if (number < 0 || number > data.length) {
+    else if (num < 0 || num > data.length) {
       console.log(`USAGE node pets.js read INDEX`);
       process.exit(1);
     }
-    else if (number === undefined) {
+    else if (num === undefined) {
       console.log(data);
     }
     else {
-      console.log(data[number]);
+      console.log(data[num]);
     }
+  });
+}
+else if (cmd === 'create') {
+  fs.readFile('pets.json', 'utf8', function(readErr, data) {
+    if (readErr) {
+      throw readErr;
+    }
+
+    var pets = JSON.parse(data);
+    let newPet = {
+      'age': parseInt(process.argv[3]),
+      'kind': process.argv[4],
+      'name': process.argv[5]
+    }
+    if (process.argv.length !== 6) {
+      console.error(`Usage: node pets.js create AGE KIND NAME`);
+      process.exit(1);
+    }
+
+    pets.push(newPet);
+    console.log(newPet);
+    var petsJSON = JSON.stringify(pets);
+
+    fs.writeFile('pets.json', petsJSON, function(writeErr) {
+      if (writeErr) {
+        throw writeErr;
+      }
+    });
   });
 }
 else {
