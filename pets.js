@@ -55,6 +55,38 @@ else if (cmd === 'create') {
     });
   });
 }
+else if (cmd === 'update') {
+  fs.readFile('pets.json', 'utf8', function(readErr, data) {
+    if (readErr) {
+      throw readErr;
+    }
+
+    var pets = JSON.parse(data);
+
+    let updatedPet = {
+      'age': parseInt(process.argv[4]),
+      'kind': process.argv[5],
+      'name': process.argv[6]
+    }
+
+    if (process.argv.length !== 7) {
+      console.error(`Usage: node pets.js update INDEX AGE KIND NAME`);
+      process.exit(1);
+    }
+
+    pets[process.argv[3]] = updatedPet;
+    var petsJSON = JSON.stringify(pets);
+
+    fs.writeFile('pets.json', petsJSON, function(writeErr) {
+      if (writeErr) {
+        throw writeErr;
+      }
+    });
+  });
+}
+
+
+
 else {
   console.error(`Usage: ${node} ${file} [read | create | update | destroy]`);
   process.exit(1)
