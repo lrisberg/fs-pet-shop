@@ -84,6 +84,34 @@ else if (cmd === 'update') {
     });
   });
 }
+else if (cmd === 'destroy') {
+  fs.readFile('pets.json', 'utf8', function(readErr, data) {
+    if (readErr) {
+      throw readErr;
+    }
+
+    var pets = JSON.parse(data);
+    console.log(typeof process.argv[3]);
+
+    if (process.argv[3] === undefined) {
+      console.error(`Usage: node pets.js destroy INDEX`);
+      process.exit(1);
+    }
+
+
+    let destroyedPet = pets.splice(process.argv[4], 1);
+
+    console.log(destroyedPet);
+
+    var petsJSON = JSON.stringify(pets);
+
+    fs.writeFile('pets.json', petsJSON, function(writeErr) {
+      if (writeErr) {
+        throw writeErr;
+      }
+    });
+  });
+}
 
 
 
