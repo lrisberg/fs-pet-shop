@@ -1,114 +1,28 @@
-const node = path.basename(process.argv[0]);
-const file = path.basename(process.argv[1]);
-const cmd = process.argv[2];
-const num = process.argv[3];
+const fs = require('fs');
+const path = require('path');
+const petsPath = path.join(__dirname, 'pets.JSON');
+let args = process.argv;
+let subCommand = args[2];
 
-if (cmd === 'read') {
-  fs.readFile('pets.json', 'utf8', (err, data) => {
-    data = JSON.parse(data);
 
-    if (err) {
-      throw err;
-    }
-    else if (num < 0 || num > data.length) {
-      console.log(`USAGE node pets.js read INDEX`);
-      process.exit(1);
-    }
-    else if (num === undefined) {
-      console.log(data);
-    }
-    else {
-      console.log(data[num]);
-    }
-  });
-}
-else if (cmd === 'create') {
-  fs.readFile('pets.json', 'utf8', function(readErr, data) {
-    if (readErr) {
-      throw readErr;
+fs.readFile(petsPath, 'utf8', (err, petsData) => {
+  let parsedPets = JSON.parse(petsData);
+  if (subCommand === 'read') {
+    if (args.length === 3) {
+      console.log(parsedPets);
     }
 
-    var pets = JSON.parse(data);
-    let newPet = {
-      'age': parseInt(process.argv[3]),
-      'kind': process.argv[4],
-      'name': process.argv[5]
+    else if (args[3] >= 0 && args[3] < parsedPets.length) {
+      console.log('IN');
     }
-    if (process.argv.length !== 6) {
-      console.error(`Usage: node pets.js create AGE KIND NAME`);
-      process.exit(1);
-    }
-
-    pets.push(newPet);
-    console.log(newPet);
-    var petsJSON = JSON.stringify(pets);
-
-    fs.writeFile('pets.json', petsJSON, function(writeErr) {
-      if (writeErr) {
-        throw writeErr;
-      }
-    });
-  });
-}
-else if (cmd === 'update') {
-  fs.readFile('pets.json', 'utf8', function(readErr, data) {
-    if (readErr) {
-      throw readErr;
-    }
-
-    var pets = JSON.parse(data);
-
-    let updatedPet = {
-      'age': parseInt(process.argv[4]),
-      'kind': process.argv[5],
-      'name': process.argv[6]
-    }
-
-    if (process.argv.length !== 7) {
-      console.error(`Usage: node pets.js update INDEX AGE KIND NAME`);
-      process.exit(1);
-    }
-
-    pets[process.argv[3]] = updatedPet;
-    var petsJSON = JSON.stringify(pets);
-
-    fs.writeFile('pets.json', petsJSON, function(writeErr) {
-      if (writeErr) {
-        throw writeErr;
-      }
-    });
-  });
-}
-else if (cmd === 'destroy') {
-  fs.readFile('pets.json', 'utf8', function(readErr, data) {
-    if (readErr) {
-      throw readErr;
-    }
-
-    var pets = JSON.parse(data);
-    console.log(typeof process.argv[3]);
-
-    if (process.argv[3] === undefined) {
-      console.error(`Usage: node pets.js destroy INDEX`);
-      process.exit(1);
-    }
+  }
+})
 
 
-    let destroyedPet = pets.splice(process.argv[4], 1);
 
-    console.log(destroyedPet);
 
-    var petsJSON = JSON.stringify(pets);
 
-    fs.writeFile('pets.json', petsJSON, function(writeErr) {
-      if (writeErr) {
-        throw writeErr;
-      }
-    });
-  });
-}
-
-else {
-  console.error(`Usage: ${node} ${file} [read | create | update | destroy]`);
-  process.exit(1)
-}
+// if (err) {
+//   console.error('Usage: node pets.js [read | create | update | destroy]');
+//   process.exit(1);
+// }
