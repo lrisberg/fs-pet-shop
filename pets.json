@@ -1,1 +1,16 @@
-[{"age":7,"kind":"rainbow","name":"fido"},{"age":9,"kind":"cat","name":"Rosey"},{"age":10,"kind":"lisa","name":"lisa"}]
+[{
+        "age": 7,
+        "kind": "rainbow",
+        "name": "fido"
+    },
+    {
+        "age": 9,
+        "kind": "cat",
+        "name": "Rosey"
+    },
+    {
+        "age": 10,
+        "kind": "lisa",
+        "name": "lisa"
+    }
+]
