@@ -27,6 +27,7 @@ fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
 
     pets.push(pet);
 
+    res.setHeader("Content-Type", "application/json");
     res.send(pet);
 
     fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
