@@ -16,82 +16,103 @@ app.use(morgan('short'));
 app.disable('x-powered-by');
 
 fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
-  let pets = JSON.parse(petsJSON)
+
 
   app.post('/pets', (req, res) => {
-    let pet = req.body;
+    fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
+      let pets = JSON.parse(petsJSON)
+      let pet = req.body;
 
-    if (!pet) {
-      return res.sendStatus(400);
-    }
-
-    pets.push(pet);
-
-    res.setHeader("Content-Type", "application/json");
-    res.send(pet);
-
-    fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
-      if (err) {
-        throw err;
+      if (!pet || !pet.age || !pet.kind || !pet.name) {
+        return res.sendStatus(400);
       }
+
+      pets.push(pet);
+
+      res.setHeader("Content-Type", "application/json");
+      res.send(pet);
+
+      fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
+        if (err) {
+          throw err;
+        }
+      })
     })
   });
 
   app.get('/pets', function(req, res) {
-    res.send(pets);
+    fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
+      let pets = JSON.parse(petsJSON)
+      res.send(pets);
+    })
   });
 
   app.get('/pets/:index', function(req, res) {
-    var index = Number.parseInt(req.params.index);
+    fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
 
-    if (Number.isNaN(index) || index < 0 || index >= pets.length) {
-      return res.sendStatus(404);
-    }
+      let pets = JSON.parse(petsJSON)
+      var index = Number.parseInt(req.params.index);
 
-    res.send(pets[index]);
+      if (Number.isNaN(index) || index < 0 || index >= pets.length) {
+        return res.sendStatus(404);
+      }
+
+      res.send(pets[index]);
+    })
   });
 
   app.patch('/pets/:index', function(req, res) {
-    var index = Number.parseInt(req.params.index);
+    fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
 
-    if (Number.isNaN(index) || index < 0 || index >= pets.length) {
-      return res.sendStatus(404);
-    }
+      let pets = JSON.parse(petsJSON);
+      var index = Number.parseInt(req.params.index);
 
-    var pet = req.body;
-
-    if (!pet) {
-      return res.sendStatus(400);
-    }
-
-    pets[index] = pet;
-
-    res.send(pet);
-
-    fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
-      if (err) {
-        throw err;
+      if (Number.isNaN(index) || index < 0 || index >= pets.length) {
+        return res.sendStatus(404);
       }
+
+      var pet = req.body;
+
+      if (!pet) {
+        return res.sendStatus(400);
+      }
+
+      for (let key in pet) {
+        pets[index][key] = pet[key];
+      }
+
+      res.send(pets[index]);
+
+      fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
+        if (err) {
+          throw err;
+        }
+      })
     })
   });
 
   app.delete('/pets/:index', function(req, res) {
-    var index = Number.parseInt(req.params.index);
+    fs.readFile('pets.json', 'utf8', (err, petsJSON) => {
+      let pets = JSON.parse(petsJSON);
+      var index = Number.parseInt(req.params.index);
 
-    if (Number.isNaN(index) || index < 0 || index >= pets.length) {
-      return res.sendStatus(404);
-    }
-
-    var pet = pets.splice(index, 1)[0];
-
-    res.send(pet);
-
-    fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
-      if (err) {
-        throw err;
+      if (Number.isNaN(index) || index < 0 || index >= pets.length) {
+        return res.sendStatus(404);
       }
-    })
+      console.log(index);
+      console.log(pets);
+      var pet = pets.splice(index, 1)[0];
+      console.log(pet);
 
+      res.setHeader("Content-Type", "application/json");
+      res.send(pet);
+
+      fs.writeFile(petsPath, JSON.stringify(pets), (err) => {
+        if (err) {
+          throw err;
+        }
+      })
+    })
   });
 
 
